@@ -2,6 +2,7 @@ import sys
 import os
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types 
 
 def main():
     load_dotenv()
@@ -10,23 +11,29 @@ def main():
         print("Gemini error: missing GEMINI_API_KEY")
         return
 
+    if len(sys.argv) < 2:
+        print("Error: missing prompt")
+        print("Usage: uv run main.py \"your prompt here\"")
+        sys.exit(1)
+    
+    prompt = " ".join(sys.argv[1:]) 
     client = genai.Client(api_key=api_key)
 
-    if len(sys.argv) < 2:
-                print("Error: missing prompt")
-                sys.exit(1)
-    
-    prompt = sys.argv     
+    messages = [
+         types.Content(role="user", parts=[types.Part(text=prompt)])
+    ]
     
     try:
-            resp = client.models.generate_content(
-                model="gemini-2.0-flash-001",
-                contents= prompt
+        resp = client.models.generate_content(
+            model="gemini-2.0-flash-001",
+            contents= messages
             )
-            print(resp.text)
-            meta = resp.usage_metadata
-            print(f"Prompt tokens: {meta.prompt_token_count}")
-            print(f"Response tokens: {meta.candidates_token_count}")  
+        if "--verbose" == sys.argv[len(sys.argv)]:  
+            print(f"Users prompt: {prompt}")
+        print(resp.text)
+        meta = resp.usage_metadata
+        print(f"Prompt tokens: {meta.prompt_token_count}")
+        print(f"Response tokens: {meta.candidates_token_count}")  
     except Exception as e:
         msg = str(e).lower()
         if "quota" in msg or "exceeded" in msg or "rate limit" in msg:
