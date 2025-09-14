@@ -20,6 +20,7 @@ def main():
     client = genai.Client(api_key=api_key)
 
     messages = [
+
          types.Content(role="user", parts=[types.Part(text=prompt)])
     ]
     
@@ -28,12 +29,13 @@ def main():
             model="gemini-2.0-flash-001",
             contents= messages
             )
-        if "--verbose" == sys.argv[len(sys.argv)]:  
-            print(f"Users prompt: {prompt}")
+        if "--verbose" in prompt:  
+            print(f"User prompt: {prompt[:]}")
+            meta = resp.usage_metadata
+            print(f"Prompt tokens: {meta.prompt_token_count}")
+            print(f"Response tokens: {meta.candidates_token_count}") 
         print(resp.text)
-        meta = resp.usage_metadata
-        print(f"Prompt tokens: {meta.prompt_token_count}")
-        print(f"Response tokens: {meta.candidates_token_count}")  
+        meta = resp.usage_metadata 
     except Exception as e:
         msg = str(e).lower()
         if "quota" in msg or "exceeded" in msg or "rate limit" in msg:
