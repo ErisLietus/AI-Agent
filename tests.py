@@ -1,11 +1,15 @@
-from functions.write_file import write_file
+from functions.run_python_file import run_python_file
 
-def show(wd, file_path, content):
-    print(write_file(wd, file_path, content))
+def show(working_directory, file_path, args=None):
+    if args is None:
+        args = []
+    print(run_python_file(working_directory, file_path, args))
 
 if __name__ == "__main__":
-    show("calculator", "lorem.txt", "wait, this isn't lorem ipsum")
-    show("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet")
-    show("calculator", "/tmp/temp.txt", "this should not be allowed")
+    show("calculator", "main.py")                 # no args
+    show("calculator", "main.py", ["3 + 5"])      # with args
+    show("calculator", "tests.py")
+    show("calculator", "../main.py")
+    show("calculator", "nonexistent.py")
     
    
