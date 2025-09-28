@@ -1,14 +1,11 @@
-from functions.get_file_content import get_file_content
+from functions.write_file import write_file
 
-def show(title, wd, file_path):
-    result = get_file_content(wd, file_path)
-    print(f"Result for {title}:")
-    for line in result.splitlines():
-        print(f"  {line}")
+def show(wd, file_path, content):
+    print(write_file(wd, file_path, content))
 
 if __name__ == "__main__":
-    show("main", "calculator", "main.py")
-    show("outside","calculator", "pkg/calculator.py")
-    show("missing","calculator", "/bin/cat")
-    show("error","calculator", "pkg/does_not_exist.py")
+    show("calculator", "lorem.txt", "wait, this isn't lorem ipsum")
+    show("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet")
+    show("calculator", "/tmp/temp.txt", "this should not be allowed")
+    
    
